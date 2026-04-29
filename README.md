@@ -314,7 +314,7 @@ docker compose exec app npx prisma db push
 
 ## 🗄️ 数据库 Schema
 
-```mermaid
+```
 erDiagram
     User ||--o{ Assessment : has
     User ||--o| HealthProfile : has
