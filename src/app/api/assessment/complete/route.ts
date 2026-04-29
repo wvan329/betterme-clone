@@ -56,6 +56,9 @@ export async function POST(req: NextRequest) {
       sleepHours: assessment.sleepHours || 'SEVEN_TO_EIGHT',
     });
 
+    // 转为纯 JSON 对象（消除 TypeScript 类型索引签名问题）
+    const rawData = JSON.parse(JSON.stringify(result));
+
     // 事务：写入结果 + 标记完成
     const [healthProfile] = await prisma.$transaction([
       prisma.healthProfile.upsert({
@@ -70,7 +73,7 @@ export async function POST(req: NextRequest) {
           suggestedCalories: result.suggestedCalories,
           targetDate: new Date(result.targetDate),
           predictedWeight: result.predictedWeight,
-          rawData: result,
+          rawData,
         },
         update: {
           bmi: result.bmi,
@@ -81,7 +84,7 @@ export async function POST(req: NextRequest) {
           suggestedCalories: result.suggestedCalories,
           targetDate: new Date(result.targetDate),
           predictedWeight: result.predictedWeight,
-          rawData: result,
+          rawData,
         },
       }),
       prisma.assessment.update({
