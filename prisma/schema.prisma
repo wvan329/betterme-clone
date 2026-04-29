@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── 用户表 ───
+model User {
+  id           String   @id @default(uuid())
+  sessionId    String   @unique
+  email        String?
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  assessments   Assessment[]
+  healthProfile HealthProfile?
+  subscription  Subscription?
+}
+
+// ─── 测评数据表（分步保存） ───
+model Assessment {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  currentStep Int      @default(1)
+  status      String   @default("IN_PROGRESS") // IN_PROGRESS | COMPLETED
+
+  // Step 1: 年龄选择
+  ageRange    String?  // "18-29" | "30-39" | "40-49" | "50+"
+
+  // Step 2: 性别
+  gender      String?  // "MALE" | "FEMALE" | "OTHER"
+
+  // Step 3-6: 生活方式
+  dailyActivity String? // "SITTING" | "ACTIVE_BREAKS" | "ON_FEET"
+  energyLevel   String? // "HIGH_STEADY" | "DRAGGING" | "POST_LUNCH_SLUMP" | "LOW_TIRED"
+  waterIntake   String? // "COFFEE_TEA_ONLY" | "TWO_GLASSES" | "TWO_TO_SIX" | "MORE_THAN_SIX"
+  sleepHours    String? // "LESS_THAN_5" | "FIVE_TO_SIX" | "SEVEN_TO_EIGHT" | "MORE_THAN_8"
+
+  // Step 7-9: 营养
+  breakfastTime String? // "SIX_TO_EIGHT" | "EIGHT_TO_TEN" | "TEN_TO_NOON" | "SKIP"
+  lunchTime     String? // "TEN_TO_NOON" | "NOON_TO_TWO" | "TWO_TO_FOUR" | "SKIP"
+  dinnerTime    String? // "FOUR_TO_SIX" | "SIX_TO_EIGHT" | "EIGHT_TO_TEN" | "SKIP"
+  dietType      String? // "TRADITIONAL" | "KETO" | "PALEO" | "VEGETARIAN" | "VEGAN" | "KETO_VEGAN" | "MEDITERRANEAN" | "PESCATARIAN" | "LACTOSE_FREE" | "GLUTEN_FREE"
+
+  // Step 10-11: 多选（JSON）
+  badHabits     Json?    // string[]
+  lifeEvents    Json?    // string[]
+
+  // Step 12: 重要事件
+  upcomingEvent String?  // "VACATION" | "WEDDING" | "HOLIDAY" | "SPORTING" | "REUNION" | "BIRTHDAY" | "OTHER" | "NONE"
+
+  // Step 13-14: 身体数据
+  height        Float?   // cm
+  weight        Float?   // kg
+  goalWeight    Float?   // kg
+  targetAge     Int?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
+}
+
+// ─── 健康评估结果表 ───
+model HealthProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id])
+
+  bmi               Float
+  bmiCategory       String   // "UNDERWEIGHT" | "NORMAL" | "OVERWEIGHT" | "OBESE"
+  bodyType          String   // "ECTOMORPH" | "MESOMORPH" | "ENDOMORPH"
+  fitnessLevel      String   // "BEGINNER" | "INTERMEDIATE" | "ADVANCED"
+  metabolism        String   // "FAST" | "MODERATE" | "SLOW"
+
+  suggestedCalories Int      // kcal/day
+  targetDate        DateTime
+  predictedWeight   Float
+
+  rawData           Json?    // 完整计算结果（含 weightChart）
+
+  createdAt         DateTime @default(now())
+}
+
+// ─── 订阅表 ───
+model Subscription {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  user      User      @relation(fields: [userId], references: [id])
+
+  status    String    @default("INACTIVE") // INACTIVE | ACTIVE | EXPIRED
+  planType  String?   // "ONE_WEEK_TRIAL" | "FOUR_WEEK" | "TWELVE_WEEK"
+  startDate DateTime?
+  endDate   DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
