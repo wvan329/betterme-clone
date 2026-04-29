@@ -4,6 +4,8 @@
 
 基于 Next.js 16 + Prisma 7 + PostgreSQL 构建的健康测评 SaaS 应用。用户完成 14 道问卷后，服务端计算 BMI、体态类型、代谢水平，并生成个性化 4 周普拉提计划。支持分步保存、进度恢复、模拟支付鉴权。
 
+**🟢 在线体验：[https://a.wgk-fun.top/betterme-api](https://a.wgk-fun.top/betterme-api)**
+
 ---
 
 ## 🚀 快速开始

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
-import { apiUrl } from '@/lib/api-url';
+import { apiUrl, assetUrl } from '@/lib/api-url';
 
 export default function NamePage() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function NamePage() {
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center min-h-screen px-5 max-w-lg mx-auto w-full animate-fade-in">
-      <img src="/logo.png" alt="BetterMe" className="w-12 h-12 rounded-xl mb-6" />
+      <img src={assetUrl('/logo.png')} alt="BetterMe" className="w-12 h-12 rounded-xl mb-6" />
 
       <div className="text-center mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-2">您叫什么名字？</h2>

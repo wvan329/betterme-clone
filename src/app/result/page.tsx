@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
-import { apiUrl } from '@/lib/api-url';
+import { apiUrl, assetUrl } from '@/lib/api-url';
 import type { ResultResponse } from '@/types';
 
 const LABELS: Record<string, string> = {
@@ -77,7 +77,7 @@ export default function ResultPage() {
     <main className="flex-1 min-h-screen px-5 py-8 max-w-lg mx-auto w-full pb-20 animate-fade-in">
       {/* Logo */}
       <div className="text-center mb-6">
-        <img src="/logo.png" alt="BetterMe" className="w-10 h-10 rounded-xl mx-auto mb-2" />
+        <img src={assetUrl('/logo.png')} alt="BetterMe" className="w-10 h-10 rounded-xl mx-auto mb-2" />
         <h1 className="text-lg font-bold text-gray-900">
           {result.userName ? `${result.userName}，` : ''}您的普拉提新手计划已就绪
         </h1>

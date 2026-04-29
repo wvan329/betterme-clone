@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
-import { apiUrl } from '@/lib/api-url';
+import { apiUrl, assetUrl } from '@/lib/api-url';
 import type { ResultResponse } from '@/types';
 
 export default function CheckoutPage() {
@@ -54,7 +54,7 @@ export default function CheckoutPage() {
   return (
     <main className="flex-1 min-h-screen px-5 py-8 max-w-lg mx-auto w-full animate-fade-in">
       <div className="text-center mb-8">
-        <img src="/logo.png" alt="BetterMe" className="w-10 h-10 rounded-xl mx-auto mb-3" />
+        <img src={assetUrl('/logo.png')} alt="BetterMe" className="w-10 h-10 rounded-xl mx-auto mb-3" />
         <h1 className="text-xl font-bold text-gray-900">BetterMe</h1>
       </div>
 

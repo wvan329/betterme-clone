@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
 import { getStepConfig, TOTAL_STEPS } from '@/lib/quiz-config';
-import { apiUrl } from '@/lib/api-url';
+import { apiUrl, assetUrl } from '@/lib/api-url';
 
 function ProgressBar({ current, total }: { current: number; total: number }) {
   const pct = Math.round((current / total) * 100);
@@ -106,7 +106,7 @@ export default function QuizStepPage() {
 
   // 🔈 TTS 语音播报
   useEffect(() => {
-    const audioFile = `/audio/q${displayStep}.mp3`;
+    const audioFile = assetUrl(`/audio/q${displayStep}.mp3`);
     const audio = new Audio(audioFile);
     audioRef.current = audio;
     audio.play().catch(() => {}); // 静默失败（浏览器可能阻止自动播放）
@@ -152,7 +152,7 @@ export default function QuizStepPage() {
     <main className="flex-1 flex flex-col min-h-screen px-5 py-8 max-w-lg mx-auto w-full animate-fade-in">
       {/* Logo */}
       <div className="mb-5">
-        <img src="/logo.png" alt="BetterMe" className="w-8 h-8 rounded-lg" />
+        <img src={assetUrl('/logo.png')} alt="BetterMe" className="w-8 h-8 rounded-lg" />
       </div>
 
       {/* 进度条 */}
@@ -161,7 +161,7 @@ export default function QuizStepPage() {
       {/* 配图 */}
       <div className="mb-6 rounded-2xl overflow-hidden shadow-sm">
         <img
-          src={`/quiz/step${displayStep}.jpg`}
+          src={assetUrl(`/quiz/step${displayStep}.jpg`)}
           alt={config.question}
           className="w-full aspect-[3/2] object-cover"
         />

@@ -3,13 +3,13 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSession } from '@/hooks/use-session';
-import { apiUrl } from '@/lib/api-url';
+import { apiUrl, assetUrl } from '@/lib/api-url';
 
 const AGE_OPTIONS = [
-  { value: '18-29', label: '18-29岁', img: '/age-18-29.jpg' },
-  { value: '30-39', label: '30-39岁', img: '/age-30-39.jpg' },
-  { value: '40-49', label: '40-49岁', img: '/age-40-49.jpg' },
-  { value: '50+', label: '50岁以上', img: '/age-50-plus.jpg' },
+  { value: '18-29', label: '18-29岁', img: assetUrl('/age-18-29.jpg') },
+  { value: '30-39', label: '30-39岁', img: assetUrl('/age-30-39.jpg') },
+  { value: '40-49', label: '40-49岁', img: assetUrl('/age-40-49.jpg') },
+  { value: '50+', label: '50岁以上', img: assetUrl('/age-50-plus.jpg') },
 ];
 
 export default function HomePage() {
@@ -63,7 +63,7 @@ export default function HomePage() {
     <main className="flex-1 flex flex-col items-center min-h-screen px-5 py-10 max-w-lg mx-auto w-full animate-fade-in">
       {/* Logo */}
       <div className="mb-3">
-        <img src="/logo.png" alt="BetterMe" className="w-12 h-12 rounded-xl shadow-sm" />
+        <img src={assetUrl('/logo.png')} alt="BetterMe" className="w-12 h-12 rounded-xl shadow-sm" />
       </div>
 
       {/* 标题区 */}
