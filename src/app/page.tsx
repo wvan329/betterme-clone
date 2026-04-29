@@ -1,65 +1,118 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useSession } from '@/hooks/use-session';
+
+const AGE_OPTIONS = [
+  { value: '18-29', label: '18-29岁', img: '/age-18-29.jpg' },
+  { value: '30-39', label: '30-39岁', img: '/age-30-39.jpg' },
+  { value: '40-49', label: '40-49岁', img: '/age-40-49.jpg' },
+  { value: '50+', label: '50岁以上', img: '/age-50-plus.jpg' },
+];
+
+export default function HomePage() {
+  const router = useRouter();
+  const { userId, loading, error } = useSession();
+  const [saving, setSaving] = useState(false);
+
+  const handleSelect = async (ageRange: string) => {
+    if (!userId || saving) return;
+    setSaving(true);
+    try {
+      const res = await fetch('/api/assessment/save-step', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, step: 1, data: { ageRange } }),
+      });
+      if (res.ok) {
+        router.push('/quiz/1');
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.error || '保存失败，请重试');
+        setSaving(false);
+      }
+    } catch {
+      alert('网络错误，请重试');
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <main className="flex-1 flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-gray-400 text-sm">加载中...</p>
         </div>
       </main>
-    </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="flex-1 flex flex-col items-center justify-center min-h-screen p-8 gap-4">
+        <p className="text-red-500">出错了：{error}</p>
+        <button onClick={() => window.location.reload()} className="text-emerald-600 underline">刷新页面</button>
+      </main>
+    );
+  }
+
+  return (
+    <main className="flex-1 flex flex-col items-center min-h-screen px-5 py-10 max-w-lg mx-auto w-full animate-fade-in">
+      {/* Logo */}
+      <div className="mb-3">
+        <img src="/logo.png" alt="BetterMe" className="w-12 h-12 rounded-xl shadow-sm" />
+      </div>
+
+      {/* 标题区 */}
+      <div className="text-center mb-8">
+        <span className="inline-block text-xs font-semibold tracking-widest uppercase text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full mb-3">
+          普拉提新手
+        </span>
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">选择您的年龄段</h1>
+        <p className="text-sm text-gray-400">1 分钟快速测评 · 获取专属计划</p>
+      </div>
+
+      {/* 年龄卡片 */}
+      <div className="grid grid-cols-2 gap-3 w-full">
+        {AGE_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => handleSelect(opt.value)}
+            disabled={saving}
+            className="group relative bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md hover:border-emerald-200 transition-all duration-200 active:scale-[0.97] disabled:opacity-50"
+          >
+            <div className="aspect-square overflow-hidden">
+              <img
+                src={opt.img}
+                alt={opt.label}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            <div className="p-3 text-center bg-white">
+              <span className="font-semibold text-sm text-gray-800">{opt.label}</span>
+            </div>
+            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/5 pointer-events-none" />
+          </button>
+        ))}
+      </div>
+
+      {/* 查看结果 */}
+      <button
+        onClick={() => router.push('/result')}
+        className="mt-8 text-sm text-gray-400 hover:text-emerald-600 transition-colors underline underline-offset-4"
+      >
+        查看我的测评结果
+      </button>
+
+      {/* 底部 */}
+      <p className="text-xs text-gray-300 mt-auto pt-10 text-center leading-relaxed">
+        选择年龄并继续即表示您同意我们的
+        <a href="#" className="underline mx-1 hover:text-gray-500">服务条款</a>
+        和
+        <a href="#" className="underline mx-1 hover:text-gray-500">隐私政策</a>
+      </p>
+    </main>
   );
 }

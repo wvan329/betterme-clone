@@ -1,26 +1,120 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --primary: #059669;
+  --primary-light: #34d399;
+  --primary-dark: #047857;
+  --accent: #f472b6;
+  --bg-warm: #fafaf9;
+  --bg-card: #ffffff;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(180deg, #f0fdf4 0%, #fafaf9 30%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+/* 按钮通用 */
+.btn-primary {
+  background: linear-gradient(135deg, #059669, #34d399);
+  color: white;
+  font-weight: 600;
+  border-radius: 14px;
+  padding: 14px 28px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.35);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 卡片 */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  border: 1px solid #f3f4f6;
+}
+
+/* 选项按钮 */
+.option-btn {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 18px;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.option-btn:hover {
+  border-color: #a7f3d0;
+  background: #f0fdf4;
+}
+.option-btn.selected {
+  border-color: #059669;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 500;
+}
+
+/* 输入框 */
+.input-field {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  font-size: 1rem;
+  transition: border-color 0.15s;
+  background: white;
+}
+.input-field:focus {
+  outline: none;
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+/* 进度条 */
+.progress-bar {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #059669, #34d399);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
 }
