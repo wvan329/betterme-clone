@@ -374,7 +374,6 @@ User ──1:1── HealthProfile （一个用户一个健康档案）
 User ──1:1── Subscription  （一个用户一个订阅记录）
 ```
 
-> 打开 [schema.html](schema.html) 查看可视化 ER 图。
 
 ### 设计要点
 
