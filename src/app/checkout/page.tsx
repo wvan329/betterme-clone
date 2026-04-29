@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
+import { apiUrl } from '@/lib/api-url';
 import type { ResultResponse } from '@/types';
 
 export default function CheckoutPage() {
@@ -15,7 +16,7 @@ export default function CheckoutPage() {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetch(`/api/result?userId=${userId}`);
+        const res = await fetch(apiUrl(`/api/result?userId=${userId}`));
         if (res.ok) setResult(await res.json());
       } catch { /* ignore */ }
       setLoading(false);
@@ -25,7 +26,7 @@ export default function CheckoutPage() {
   const handlePay = async (planType: string) => {
     if (!userId) return;
     try {
-      const res = await fetch('/api/pay', {
+      const res = await fetch(apiUrl('/api/pay'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, planType }),

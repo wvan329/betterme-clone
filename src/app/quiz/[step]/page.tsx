@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
 import { getStepConfig, TOTAL_STEPS } from '@/lib/quiz-config';
+import { apiUrl } from '@/lib/api-url';
 
 function ProgressBar({ current, total }: { current: number; total: number }) {
   const pct = Math.round((current / total) * 100);
@@ -116,7 +117,7 @@ export default function QuizStepPage() {
     if (!userId || saving) return;
     setSaving(true);
     try {
-      const res = await fetch('/api/assessment/save-step', {
+      const res = await fetch(apiUrl('/api/assessment/save-step'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, step: apiStep, data }),

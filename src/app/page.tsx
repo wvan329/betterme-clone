@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSession } from '@/hooks/use-session';
+import { apiUrl } from '@/lib/api-url';
 
 const AGE_OPTIONS = [
   { value: '18-29', label: '18-29岁', img: '/age-18-29.jpg' },
@@ -20,7 +21,7 @@ export default function HomePage() {
     if (!userId || saving) return;
     setSaving(true);
     try {
-      const res = await fetch('/api/assessment/save-step', {
+      const res = await fetch(apiUrl('/api/assessment/save-step'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, step: 1, data: { ageRange } }),

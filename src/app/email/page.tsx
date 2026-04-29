@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/hooks/use-session';
+import { apiUrl } from '@/lib/api-url';
 
 export default function EmailPage() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function EmailPage() {
     if (!userId || !email.trim()) return;
     setSaving(true);
     try {
-      const res = await fetch('/api/user/email', {
+      const res = await fetch(apiUrl('/api/user/email'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, email: email.trim() }),

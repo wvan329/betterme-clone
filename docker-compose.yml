@@ -1,12 +1,14 @@
-version: "3.9"
-
 services:
   app:
-    build: .
+    build:
+      context: .
+      args:
+        - NEXT_PUBLIC_BASE_PATH=/betterme-api
     ports:
       - "3000:3000"
     environment:
       - DATABASE_URL=postgres://postgres:${DB_PASSWORD:-postgres}@db:5432/betterme?sslmode=disable
+      - NEXT_PUBLIC_BASE_PATH=/betterme-api
     depends_on:
       db:
         condition: service_healthy

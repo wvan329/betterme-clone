@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { StartResponse, AssessmentProgress } from '@/types';
+import { apiUrl } from '@/lib/api-url';
 
 const STORAGE_KEY = 'betterme_session';
 
@@ -65,7 +66,7 @@ export function useSession() {
         sessionId = generateUUID();
       }
 
-      const res = await fetch('/api/assessment/start', {
+      const res = await fetch(apiUrl('/api/assessment/start'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sessionId }),
@@ -103,7 +104,7 @@ export function useSession() {
     if (!state.userId) return;
 
     try {
-      const res = await fetch(`/api/assessment/progress?userId=${state.userId}`);
+      const res = await fetch(apiUrl(`/api/assessment/progress?userId=${state.userId}`));
       if (res.ok) {
         const data: AssessmentProgress = await res.json();
         setState(prev => ({
