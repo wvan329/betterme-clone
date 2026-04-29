@@ -314,73 +314,67 @@ docker compose exec app npx prisma db push
 
 ## 🗄️ 数据库 Schema
 
+| 表名 | 字段 | 类型 | 说明 |
+|------|------|------|------|
+| **User** | id | uuid PK | 用户唯一标识 |
+| | sessionId | string UK | 匿名会话 ID（localStorage UUID） |
+| | email | string? | 邮箱（可选） |
+| | name | string? | 姓名（可选） |
+| | createdAt | datetime | |
+| | updatedAt | datetime | |
+| **Assessment** | id | uuid PK | 测评记录 ID |
+| | userId | uuid FK → User | 关联用户 |
+| | currentStep | int | 当前步骤 (1-15) |
+| | status | string | IN_PROGRESS / COMPLETED |
+| | ageRange | string? | 年龄段 |
+| | gender | string? | 性别 |
+| | dailyActivity | string? | 日常活动水平 |
+| | energyLevel | string? | 精力水平 |
+| | waterIntake | string? | 饮水习惯 |
+| | sleepHours | string? | 睡眠时长 |
+| | breakfastTime | string? | 早餐时间 |
+| | lunchTime | string? | 午餐时间 |
+| | dinnerTime | string? | 晚餐时间 |
+| | dietType | string? | 饮食方式（10种） |
+| | badHabits | json? | 坏习惯（多选数组） |
+| | lifeEvents | json? | 生活事件（多选数组） |
+| | upcomingEvent | string? | 近期活动 |
+| | height | float? | 身高 (cm) |
+| | weight | float? | 体重 (kg) |
+| | goalWeight | float? | 目标体重 (kg) |
+| | targetAge | int? | 年龄 |
+| | createdAt | datetime | |
+| | updatedAt | datetime | |
+| **HealthProfile** | id | uuid PK | 健康档案 ID |
+| | userId | uuid FK UK | 关联用户（唯一） |
+| | bmi | float | BMI 值 |
+| | bmiCategory | string | 偏瘦/正常/超重/肥胖 |
+| | bodyType | string | 外胚层/中胚层/内胚层 |
+| | fitnessLevel | string | 初学者/中级/高级 |
+| | metabolism | string | 代谢快/中/慢 |
+| | suggestedCalories | int | 建议每日摄入 (kcal) |
+| | targetDate | datetime | 预测目标日期 |
+| | predictedWeight | float | 4周后预测体重 |
+| | rawData | json? | 完整计算结果（含 weightChart） |
+| | createdAt | datetime | |
+| **Subscription** | id | uuid PK | 订阅记录 ID |
+| | userId | uuid FK UK | 关联用户（唯一） |
+| | status | string | INACTIVE / ACTIVE / EXPIRED |
+| | planType | string? | 1周试用 / 4周 / 12周 |
+| | startDate | datetime? | 订阅开始时间 |
+| | endDate | datetime? | 订阅到期时间 |
+| | createdAt | datetime | |
+| | updatedAt | datetime | |
+
+### 表关系
+
 ```
-erDiagram
-    User ||--o{ Assessment : has
-    User ||--o| HealthProfile : has
-    User ||--o| Subscription : has
-
-    User {
-        uuid id PK
-        string sessionId UK
-        string email nullable
-        string name nullable
-        datetime createdAt
-        datetime updatedAt
-    }
-
-    Assessment {
-        uuid id PK
-        uuid userId FK
-        int currentStep "1-15"
-        string status "IN_PROGRESS | COMPLETED"
-        string ageRange nullable
-        string gender nullable
-        string dailyActivity nullable
-        string energyLevel nullable
-        string waterIntake nullable
-        string sleepHours nullable
-        string breakfastTime nullable
-        string lunchTime nullable
-        string dinnerTime nullable
-        string dietType nullable
-        json badHabits nullable
-        json lifeEvents nullable
-        string upcomingEvent nullable
-        float height nullable
-        float weight nullable
-        float goalWeight nullable
-        int targetAge nullable
-        datetime createdAt
-        datetime updatedAt
-    }
-
-    HealthProfile {
-        uuid id PK
-        uuid userId UK_FK
-        float bmi
-        string bmiCategory "UNDERWEIGHT|NORMAL|OVERWEIGHT|OBESE"
-        string bodyType "ECTOMORPH|MESOMORPH|ENDOMORPH"
-        string fitnessLevel "BEGINNER|INTERMEDIATE|ADVANCED"
-        string metabolism "FAST|MODERATE|SLOW"
-        int suggestedCalories
-        datetime targetDate
-        float predictedWeight
-        json rawData "完整计算结果含weightChart"
-        datetime createdAt
-    }
-
-    Subscription {
-        uuid id PK
-        uuid userId UK_FK
-        string status "INACTIVE|ACTIVE|EXPIRED"
-        string planType nullable "ONE_WEEK_TRIAL|FOUR_WEEK|TWELVE_WEEK"
-        datetime startDate nullable
-        datetime endDate nullable
-        datetime createdAt
-        datetime updatedAt
-    }
+User ──1:N── Assessment   （一个用户可多次测评）
+User ──1:1── HealthProfile （一个用户一个健康档案）
+User ──1:1── Subscription  （一个用户一个订阅记录）
 ```
+
+> 打开 [schema.html](schema.html) 查看可视化 ER 图。
 
 ### 设计要点
 
